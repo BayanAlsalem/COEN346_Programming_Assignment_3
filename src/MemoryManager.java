@@ -1,4 +1,4 @@
-public class MemoryManager {
+public class MemoryManager extends Thread{
     int main_memory_size;
     int number_of_used_page = 0;
 
