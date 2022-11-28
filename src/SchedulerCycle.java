@@ -1,32 +1,51 @@
-import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 
-public class SchedulerCycle extends TimerTask {
+public class SchedulerCycle extends Thread {
 
-    /*Creating a static variable to keep track of the scheduler cycle of all processes */
-    /*All processes created will have the same time, but different ready time (arrival time). */
-  volatile  static int seconds = 0; /*we initially start at time =0*/
+    /* The class time extends from class thread as required in the handout*/
+    // Use one binary semaphore that ensures the access to the shared variable time between processes.
+    volatile  static int time; /*we initially start at time =0*/
+    int permits = 0;
+    static Semaphore semaphore; // use a binary semaphore to protect the critical section.
 
+    public SchedulerCycle() // constructor that has no parameters.
+    {
+        time =0;
+        semaphore = new Semaphore(permits);
+    }
     static public void count()
     {
-        seconds++;
+        time++;
     }
-    static public int getTime()
-    {
-        return seconds;
-    }
-    static void tick()
-    {
+    public int get_time() throws InterruptedException {
+        semaphore.acquire();
         try {
-            Thread.sleep(1000);
-            seconds++;
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            return time*1000;
+        } finally {
+            semaphore.release(); // once you're a process is done accessing time, release its semaphore.
         }
     }
+    static void tick() throws InterruptedException {
+        semaphore.acquire();
+        try
+        {
+            //Thread.sleep(1000);
+            time++;
+        } finally { // the finally block always executes when the try block exits,
+                    // as it ensures that the finally block is executed even though there might be an exception.
+            semaphore.release();
+        }
+
+    }
+
+
     @Override
     public void run(){
 
-        tick();
+        try {
+            tick();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
