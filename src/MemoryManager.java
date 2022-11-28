@@ -16,16 +16,18 @@ public class MemoryManager extends Thread{
 
     public void Release(String variable_id) {
 
-        if (anObject.get_variable_id().equals(variable_id)) {// found
+       // if (anObject.get_variable_id().equals(variable_id))
+        {// found
 
-            anObject[i] = null; // delete what is at memory location
+         //   anObject[i] = null; // delete what is at memory location
         }
     }
 
     public int Lookup(String variable_id) {
-        if (anObject[i].get_variable_id().equals(variable_id)) {
-            int value = anObject[i].get_variable_value();
-            return value;
+       // if (anObject[i].get_variable_id().equals(variable_id))
+        {
+          //  int value = anObject[i].get_variable_value();
+            return 1;
         }
     }
 }

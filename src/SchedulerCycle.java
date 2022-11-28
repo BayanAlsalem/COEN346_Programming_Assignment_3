@@ -1,22 +1,25 @@
-public class SchedulerCycle extends Thread {
+import java.util.TimerTask;
+
+public class SchedulerCycle extends TimerTask {
 
     /*Creating a static variable to keep track of the scheduler cycle of all processes */
     /*All processes created will have the same time, but different ready time (arrival time). */
-    static int time = 0; /*we initially start at time =0*/
+  volatile  static int seconds = 0; /*we initially start at time =0*/
 
     static public void count()
     {
-        time++;
+        seconds++;
     }
     static public int getTime()
     {
-        return time;
+        return seconds;
     }
-    static void tick(int quantum)
+    static void tick()
     {
         try {
             Thread.sleep(1000);
-            time = time+quantum;
+            seconds++;
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
