@@ -94,7 +94,7 @@ public class MemoryManager extends Thread{
            {
                System.out.println("Clock: ", clock, "Process", process.getID(), "Lookup: Variable", variable_id, "Value ", page.getVariable_value(), "\n");
            }
-           else // Search in the Disk
+           else // Search in the Disk using the swap function
            {
                while (scan_disk.hasNextLine()) {
                    if (page.getVariable_id().equals(variable_id))
@@ -116,18 +116,39 @@ public class MemoryManager extends Thread{
     // So, here we are looking if the page exists in the disk or not
     // if it does, then we need to swap it with the least time accessed page
     public void Swap(Page page, Clock current_clock_time){
+        //I don't think we need a page as an argument!
         //Check if the disk has the page
-        while (scan_disk.hasNextLine())
+
+        while (scan_disk.hasNextLine()) //open the vm.txt file and go through it
         {
-            if (page.getVariable_id().equals(variable_id))
+            //Save the line in an array of String and split the values
+            String[] values = scan_disk.nextLine().split(" ");
+            if (values[0] == page.getVariable_id()) // I am not sure if we need a page object as an argument or just the variable ID
             {
-                Page temp_page = page;
+                //If we found the ID, that means it exists in the DISK!! good job
+                // Now create the temperorary page because we are going to swap values
+                // Since I am saving the line in an array of strings I need to convert/cast the
+                // variable value from a string to LONG
+                Long value_long = Long.parseLong(values[1]);
+                Page page_to_swap = new Page(values[0], value_long); //this is the page we want from the DISK
+
+
+
+                // Maybe here we can create a function that finds a page with the least accessed time?
                 if (page.last_accessed_time < current_clock_time) {
-                    temp_page = page;  // it saves the least accessed page from the main memory
-                    main_memory.add(page);
+
+                    Page temp_page = new Page(the_least_accessed_time_page); // To save the leaset accessed page from the main memory
+                    the_least_accessed_time_page = page_to_swap;
+                    main_memory.remove(the_least_accessed_time_page); //make a space in the main memory by removing the leaset accessed page after saving it in the DISK
+                    main_memory.add(page_to_swap); //adding what we have in the disk to the main memory
+                    page_to_swap = temp_page; // Save the leaset accessed page which is the temp_page to the disk
                 }
             }
+            else {
+                System.out.println("The page does not exist in the main memory or in the disk. \n");
+            }
         }
+        scan_disk.close();
     }
 
     @Override
