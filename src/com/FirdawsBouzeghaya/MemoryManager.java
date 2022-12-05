@@ -1,8 +1,9 @@
-
+package com.FirdawsBouzeghaya;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,6 +17,9 @@ public class MemoryManager extends Thread{
     // obtained from the commands.txt file
     // To read from the text file
     Scanner scan_disk = new Scanner(vm_disk);
+    Page page;
+    SchedulerCycle clock;
+    Process process;
 
     public MemoryManager(int main_memory_size,ArrayList<String>commands_list) throws IOException {
         this.main_memory = new ArrayList<>(main_memory_size);
@@ -92,18 +96,18 @@ public class MemoryManager extends Thread{
         for (int i = 0; i < main_memory.size(); i++) {
            if (page.getVariable_id().equals(variable_id))
            {
-               System.out.println("Clock: ", clock, "Process", process.getID(), "Lookup: Variable", variable_id, "Value ", page.getVariable_value(), "\n");
+            //   System.out.println("Clock: ", clock, "com.FirdawsBouzeghaya.Process", process.getID(), "Lookup: Variable", variable_id, "Value ", page.getVariable_value(), "\n");
            }
            else // Search in the Disk using the swap function
            {
                while (scan_disk.hasNextLine()) {
                    if (page.getVariable_id().equals(variable_id))
                    {
-                       Swap(page, clock);
+                      // Swap(page, clock);
                        break;
                    }
                }
-               System.out.println("Clock: ", clock, "Process", process.getID(), "Lookup: Variable", variable_id, "Value ", page.getVariable_value(), "\n");
+             //  System.out.println("Clock: ", clock, "com.FirdawsBouzeghaya.Process", process.getID(), "Lookup: Variable", variable_id, "Value ", page.getVariable_value(), "\n");
            }
 
            }
@@ -115,6 +119,7 @@ public class MemoryManager extends Thread{
     // to be in the main memory.
     // So, here we are looking if the page exists in the disk or not
     // if it does, then we need to swap it with the least time accessed page
+   /*
     public void Swap(Page page, Clock current_clock_time){
         //I don't think we need a page as an argument!
         //Check if the disk has the page
@@ -135,7 +140,7 @@ public class MemoryManager extends Thread{
 
 
                 // Maybe here we can create a function that finds a page with the least accessed time?
-                if (page.last_accessed_time < current_clock_time) {
+                if (page.getLastAccess() < current_clock_time) {
 
                     Page temp_page = new Page(the_least_accessed_time_page); // To save the leaset accessed page from the main memory
                     the_least_accessed_time_page = page_to_swap;
@@ -149,7 +154,7 @@ public class MemoryManager extends Thread{
             }
         }
         scan_disk.close();
-    }
+    }*/
 
     @Override
     public void run() {

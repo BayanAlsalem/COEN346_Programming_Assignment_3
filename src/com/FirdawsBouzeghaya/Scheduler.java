@@ -1,13 +1,15 @@
+package com.FirdawsBouzeghaya;
+
+import com.FirdawsBouzeghaya.Process;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Scheduler extends Thread{
-    //This class is somehow similar to the Scheduler class
+    //This class is somehow similar to the com.FirdawsBouzeghaya.Scheduler class
     // implemented in the 2nd programming assignment.
     private Queue<Process> ready_processes;
     private Queue<Process> all_processes;

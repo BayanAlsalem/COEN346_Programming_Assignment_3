@@ -1,5 +1,3 @@
-
-
 package com.FirdawsBouzeghaya;
 
         import java.io.BufferedReader;
@@ -12,7 +10,7 @@ package com.FirdawsBouzeghaya;
         import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         /**************************************************************************************
          Read the different lines first the text file and assign them to different variables to pass
          through the different classes constructors.
@@ -21,7 +19,7 @@ public class Main {
          *************************************************************************************/
         Scanner sc_commands = new Scanner(new BufferedReader(new FileReader("src/com/FirdawsBouzeghaya/commands.txt")));
         Scanner sc_memconfig = new Scanner(new BufferedReader(new FileReader("src/com/FirdawsBouzeghaya/memconfig.txt")));
-        Scanner sc_processes = new Scanner(new BufferedReader(new FileReader("src/com/FirdawsBouzeghaya/processes.txt.txt")));
+        Scanner sc_processes = new Scanner(new BufferedReader(new FileReader("src/com/FirdawsBouzeghaya/processes.txt")));
         int number_cores = Integer.parseInt(sc_processes.nextLine());//the first line of our processes.txt.txt
         // file is the number of cores in our system
         int number_processes = Integer.parseInt(sc_processes.nextLine()); //the second line of our processes.txt.txt
@@ -69,24 +67,16 @@ public class Main {
             e.printStackTrace();
         }
 
+        SchedulerCycle time = new SchedulerCycle();
+        for (int i=0; i<10; i++) {
+            time.run();
+            time.join();
+            System.out.println(time.get_time());
+        }
+
 
     }
 
-    // Extract the commands from the command.txt file and save them in a Queue
-//
-//        Queue<String> commands = new ArrayDeque<>();
-//        try {
-//            File text_file= new File("C:\\Users\\User\\IdeaProjects\\COEN346_Programming_Assignment_3\\src\\commands.txt");
-//            Scanner file_reader= new Scanner(text_file);
-//
-//            while (file_reader.hasNextLine()) {
-//                String fileLine= file_reader.nextLine();
-//                // Save the contents in the Commands Queue
-//                commands.add(fileLine);
-//            }
-//            file_reader.close();
-//        } catch (FileNotFoundException e) {
-//            System.out.println("Something is wrong");
-//        }
-//        System.out.println(commands.peek());
+
+
 }

@@ -1,3 +1,6 @@
+package com.FirdawsBouzeghaya;
+
+import com.FirdawsBouzeghaya.Page;
 
 public class Process extends Thread {
     // Declare attributes
@@ -54,6 +57,7 @@ public class Process extends Thread {
     public void setBurst_time(int burst_time) {
         this.burst_time = burst_time;
     }
+
 
     @Override
     public void run() {
