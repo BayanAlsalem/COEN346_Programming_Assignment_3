@@ -135,7 +135,7 @@ public class MemoryManager extends Thread{
 
 
                 // Maybe here we can create a function that finds a page with the least accessed time?
-                if (page.last_accessed_time < current_clock_time) {
+                if (page.getLast_access() < clock) {
 
                     Page temp_page = new Page(the_least_accessed_time_page); // To save the leaset accessed page from the main memory
                     the_least_accessed_time_page = page_to_swap;

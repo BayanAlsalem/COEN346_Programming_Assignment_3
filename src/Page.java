@@ -7,7 +7,7 @@ public class Page {
     private String variable_id;
     private long variable_value; //unsigned integer value
     private boolean is_available; //a boolean variable that indicates the availability of of a page.
-    private Timestamp lastAccess; //used to determine when was this page last accessed.
+    private Timestamp last_access; //used to determine when was this page last accessed.
 
     public Page(String variable_id, long variable_value)
     {
@@ -37,12 +37,16 @@ public class Page {
         this.is_available = is_available;
     }
 
-    public Timestamp getLastAccess() {
-        return lastAccess;
+    public Timestamp getLast_access() {
+        return last_access;
     }
 
-    public void setLastAccess(Timestamp lastAccess) {
-        this.lastAccess = lastAccess;
+    public void setLast_access(Timestamp last_access) {
+        this.last_access = last_access;
+    }
+    public void increment_last_accessed_time(int clock)
+    {
+        this.last_access = clock;
     }
 
 }
