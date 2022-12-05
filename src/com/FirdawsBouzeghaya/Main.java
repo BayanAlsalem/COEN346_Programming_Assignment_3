@@ -54,18 +54,30 @@ public class Main {
         }
 
 
-        Scheduler scheduler = new Scheduler(processes,number_cores);//create a scheduler object
-                                                                    // and pass to it the list of
-                                                                    // processes available in the system.
         try {
+            SchedulerCycle clock =  new SchedulerCycle(0,true);
+
+            Scheduler scheduler = new Scheduler(processes,number_cores,commands_list);//create a scheduler object
+                                                                         // and pass to it the list of
+                                                                         // processes available in the
             MemoryManager memoryManager = new MemoryManager(Integer.parseInt(memory_size),commands_list);
-            scheduler.start();
             memoryManager.start();
-            scheduler.join();
+            scheduler.start();
+            clock.start();
             memoryManager.join();
+            scheduler.join();
+
+            clock.set_start_clock(false);
+            clock.join();
+
+           // schedulerCycle.join();
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+        sc_commands.close();
+        sc_memconfig.close();
+        sc_processes.close();
 
 
     }

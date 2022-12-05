@@ -25,7 +25,7 @@ public class MemoryManager extends Thread{
     }
 
     //Extract the function that the process will execute
-    public void extract_from_commands(String variable_id, long variable_value, ArrayList commands_list)
+    public void extract_from_commands(String variable_id, long variable_value, ArrayList<String>commands_list)
     {
         for (String command: this.commands_list) {
             switch (command) {
@@ -36,7 +36,7 @@ public class MemoryManager extends Thread{
                     Release(variable_id);
                     break;
                 case "Lookup":
-                    Lookup(variable_id);
+                   // Lookup(variable_id);
                     break;
                 default:
                     // code block
@@ -86,7 +86,7 @@ public class MemoryManager extends Thread{
         }
     }
 
-    public int Lookup(String variable_id) throws InterruptedException {
+    /*public int Lookup(String variable_id) throws InterruptedException {
         // Check if the variable id exists in the main memory
         // loop through the pages
 
@@ -110,14 +110,14 @@ public class MemoryManager extends Thread{
 
         }
         return 0;
-    }
+    }*/
 
     // The swap function is responsible of swapping a page from the Disk to the main memory
     // It is used in the look-up function because in order to look for a page, it needs
     // to be in the main memory.
     // So, here we are looking if the page exists in the disk or not
     // if it does, then we need to swap it with the least time accessed page
-    public void Swap(Page page) throws InterruptedException {
+    public void Swap(Page page){
         //I don't think we need a page as an argument!
         //Check if the disk has the page
 
@@ -152,7 +152,10 @@ public class MemoryManager extends Thread{
 
     @Override
     public void run() {
-        super.run();
+
+       /* while (!commands_list.isEmpty())
+        {
+           // extract_from_commands;
+        }*/
     }
-    //todo :define swap process
 }
