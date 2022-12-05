@@ -5,27 +5,27 @@ import java.sql.Timestamp;
 public class Page {
 
     private String variable_id;
-    private int variable_value; //unsigned integer value
+    private long variable_value; //unsigned integer value
     private boolean is_available; //a boolean variable that indicates the availability of of a page.
-    private Timestamp lastAccess; //used to determine when was this page last accessed.
+    private int last_access_time; //used to determine when was this page last accessed.
 
-    public Page(String variable_id, int variable_value)
+    public Page(String variable_id, long variable_value)
     {
        this.variable_id = variable_id;
        this.variable_value = variable_value;
     }
-    public String getVariable_id() {
+    public String get_variable_id() {
         return variable_id;
     }
-    public void setVariable_id(String variable_id) {
+    public void set_variable_id(String variable_id) {
         this.variable_id = variable_id;
     }
 
-    public long getVariable_value() {
+    public long get_variable_value() {
         return variable_value;
     }
 
-    public void setVariable_value(int variable_value) {
+    public void set_variable_value(int variable_value) {
         this.variable_value = variable_value;
     }
 
@@ -37,12 +37,12 @@ public class Page {
         this.is_available = is_available;
     }
 
-    public Timestamp getLastAccess() {
-        return lastAccess;
+    public int get_last_access_time() {
+        return last_access_time;
     }
 
-    public void setLastAccess(Timestamp lastAccess) {
-        this.lastAccess = lastAccess;
+    public void setLastAccess(int last_access_time) {
+        this.last_access_time = last_access_time;
     }
 
 }

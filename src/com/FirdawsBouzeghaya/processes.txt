@@ -3,3 +3,6 @@
 2 3
 1 2
 4 3
+
+queue of all processes: P1,P2,P3
+queue of only ready processes at t=1: P2
