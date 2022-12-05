@@ -48,7 +48,6 @@ public class Main {
             String process_line = sc_processes.nextLine();
             int arrival_time = Integer.parseInt(process_line.split(" ")[0]);
             int burst_time =   Integer.parseInt(process_line.split(" ")[1]);
-            System.out.println("Arrival time: "+arrival_time+" Burst time: "+burst_time);
             Process process = new Process(arrival_time,burst_time);
             processes.add(process);
         }

@@ -51,17 +51,18 @@ public class Scheduler extends Thread {
         //if that's the case, we need to remove it from the ready_queue process and add it to the running
         // processes queue.
         this.set_number_available_cores();
-        if (!ready_processes.isEmpty()) {
+       /* if (!ready_processes.isEmpty()) {*/
             for (int i = 0; i < this.number_available_cores; i++) {
-
-                Process process = ready_processes.remove();
-                running_processes.add(process);
+                if (!ready_processes.isEmpty()) {
+                    Process process = ready_processes.remove();
+                    running_processes.add(process);
+                }
             }
-        }
+       /*}*/
 
     }
 
-    void start_process() throws InterruptedException {
+    void start_process() throws InterruptedException, IOException {
         //to start the execution of process, we first need to
         // verify if the queue of running processes is not empty
         //and then process state is equal to false--> which indicates it has never
@@ -70,9 +71,10 @@ public class Scheduler extends Thread {
         if (!this.running_processes.isEmpty()) {
             for (Process p : this.running_processes) {
                 if (!p.getProcess_state()) {
-
+                    file_writer.write("Clock: " + SchedulerCycle.get_time()+ p.getServiceTime() + "," + p.getId() + ": Started.");
                     System.out.println("Clock: " + SchedulerCycle.get_time() + "," + p.getId() + ": Started.");
                     p.setProcess_state(false);
+
 
                 }
 
@@ -81,7 +83,7 @@ public class Scheduler extends Thread {
         }
     }
 
-    void finish_process() {
+    void finish_process() throws InterruptedException, IOException {
         //When we finish a process, we first need to release the core and update all the queue.
         if (!this.running_processes.isEmpty()) {
             for (Process p : this.running_processes) {
@@ -91,6 +93,9 @@ public class Scheduler extends Thread {
                     this.running_processes.remove(p);
                     this.finished_processes.add(p);
                     this.all_processes.remove(p);
+                    file_writer.write("Clock: " + (SchedulerCycle.get_time()+ p.getServiceTime()*1000) + "," + p.getId() + ": Finished.");
+                    System.out.println("Clock: " + (SchedulerCycle.get_time()+ p.getServiceTime()*1000) + "," + p.getId() + ": Finished.");
+
                 }
             }
             //finish the process by removing it from the queue of all processes and the ready queue.
@@ -112,13 +117,12 @@ public class Scheduler extends Thread {
 
     /*This function is used to update the queues: finish and ready
      *if any process  */
-    void updateQueues() {
+    void updateQueues() throws InterruptedException {
         for (Process process : this.ready_processes) {
             /*the process' remaining time = 0 --> process is done. We have to
             move it to the finish queue.*/
             if (process.getRemainingTime() == 0) {
                 this.finished_processes.add(process);
-
             }
         }
     }
@@ -127,12 +131,15 @@ public class Scheduler extends Thread {
     @Override
     public void run() {
 
+        while (!this.all_processes.isEmpty())
         try {
-            SchedulerCycle.tick();
-           fill_ready_queue();
-            assign_core();
-           // start_process();
-        } catch (InterruptedException e) {
+            SchedulerCycle.tick();/*increment the time*/
+            fill_ready_queue();/*fill the ready queue*/
+            assign_core();/*assign core to ready processes*/
+            start_process();
+            finish_process();
+
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
 

@@ -1,4 +1,7 @@
 package com.FirdawsBouzeghaya;
+
+import java.io.FileWriter;
+
 public class Process extends Thread {
     // Declare attributes
     private int burst_time; // execution time.
@@ -9,6 +12,7 @@ public class Process extends Thread {
     private Page assigned_page;
     private Boolean process_state;// set to false if the process did not start its execution
                                   // true when we start its execution and assign to it a core.
+    private FileWriter file_writer;
 
     // Default Constructor
     public Process() {
