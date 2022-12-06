@@ -10,6 +10,7 @@ public class Process extends Thread {
     private final int process_ID;
     private String command_executed; /*This variable indicates which command this process is executing. */
     private Page assigned_page;
+
     private Boolean process_state;// set to false if the process did not start its execution
                                   // true when we start its execution and assign to it a core.
     private FileWriter file_writer;
@@ -70,6 +71,7 @@ public class Process extends Thread {
     {
         return this.process_state;
     }
+
 
     @Override
     public void run() {

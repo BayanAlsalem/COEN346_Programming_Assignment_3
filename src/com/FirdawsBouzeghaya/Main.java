@@ -26,7 +26,7 @@ public class Main {
                                                       // is the number of processes in the system.
         String memory_size = " ";
 
-        ArrayList<String>commands_list = new ArrayList<>();// this array list stores the different
+        Queue<Command>commands_list = new LinkedList<>();// this queue list stores the different
                                                             //commands that we read from the commands.txt file.
 
         Queue<Process>processes = new LinkedList<>(); //this queue is used to store all the processes available
@@ -34,8 +34,21 @@ public class Main {
         /* Get the list of commands from commands.txt file*/
         while (sc_commands.hasNextLine())
         {
-            String command_api = sc_commands.nextLine().split(" ")[0];
-            commands_list.add(command_api);
+            String command_line = sc_commands.nextLine();
+
+                String command_api = command_line.split(" ")[0];
+                String variable_id = command_line.split(" ")[1];
+                if (command_api.equals("Store")) {
+                    int variable_value = Integer.parseInt(command_line.split(" ")[2]);
+                    Command command = new Command(command_api, variable_id, variable_value);
+                    commands_list.add(command);
+                }
+                else
+                {
+                    Command command = new Command(command_api,variable_id,-1);
+                    commands_list.add(command);
+                }
+
         }
         /* Get the size of our main memory*/
         while(sc_memconfig.hasNextLine())
@@ -56,10 +69,11 @@ public class Main {
         try {
             SchedulerCycle clock =  new SchedulerCycle(0,true);
 
-            Scheduler scheduler = new Scheduler(processes,number_cores,commands_list);//create a scheduler object
+            Scheduler scheduler = new Scheduler(processes,number_cores);//create a scheduler object
                                                                          // and pass to it the list of
                                                                          // processes available in the
-            MemoryManager memoryManager = new MemoryManager(Integer.parseInt(memory_size),commands_list);
+            MemoryManager.commands_list = commands_list;
+            MemoryManager memoryManager = new MemoryManager(Integer.parseInt(memory_size));
             memoryManager.start();
             scheduler.start();
             clock.start();
