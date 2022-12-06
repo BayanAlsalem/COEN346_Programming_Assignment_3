@@ -1,42 +1,49 @@
 package com.FirdawsBouzeghaya;
+
 public class SchedulerCycle extends Thread{
+
     /* The class time extends from class thread as required in the handout*/
     // Use one binary semaphore that ensures the access to the shared variable time between processes.
-    private static int time; /*we initially start at time =0*/
-    private boolean clk_cycle; // the clock cycle to determine when to stop our clk.
-                      // initially set to false
-    static final  int incremental_time = 10;
-    public  SchedulerCycle() // constructor that has no parameters.
+    static int start_time; /*we initially start at time =0*/
+    boolean start_clock;
+
+    public  SchedulerCycle(int start_time, boolean flag) // constructor that has no parameters.
     {
-        time =0;
-        clk_cycle = false;
+        this.start_time = start_time;
+        this.start_clock = flag;
     }
 
     public static int get_time() throws InterruptedException
     {
-        return time;
-    }
-    public void set_Clk_cycle(boolean clk_cycle)
-    {
-        this.clk_cycle = clk_cycle;
+        return start_time;
     }
     public static void tick() throws InterruptedException {
 
         Thread.sleep(1000);
-        time=time+1000;
+        start_time=start_time+1000;
+    }
+    public void set_start_clock(boolean flag)
+    {
+        this.start_clock = flag;
     }
 
     @Override
     public void run()
     {
-        while (!clk_cycle)
+
+        System.out.println("Clock started: ");
+        while (!start_clock)
         {
             try {
                 tick();
+
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
         }
 
+
     }
+
 }
