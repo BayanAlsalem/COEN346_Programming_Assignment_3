@@ -10,6 +10,7 @@ public class MemoryManager extends Thread{
     private int main_memory_size;
     private int number_of_used_page = 0;
     private ArrayList<Page>main_memory;
+
     private File vm_disk = new File("src/com/FirdawsBouzeghaya/vm.txt");
     FileWriter file_writer = new FileWriter(vm_disk, false);
 
@@ -56,7 +57,7 @@ public class MemoryManager extends Thread{
             //Store the new variable in a page in the main memory.
             main_memory.add(page);
             number_of_used_page++;
-            System.out.println("Clock: "+(int)(SchedulerCycle.get_time()+this.assign_command_execution_time())+", Process: "+commands_list.peek().getProcess_executing()+", Store: Variable "+variable_id + ", Value"+variable_value);
+            System.out.println("Clock: "+(int)(SchedulerCycle.get_time()-1000+this.assign_command_execution_time())+", Process: 13"+", Store: Variable "+variable_id + ", Value "+variable_value);
         }
         else // Store in the disk space in the vm.txt file.
         {
@@ -73,7 +74,7 @@ public class MemoryManager extends Thread{
         //Store the processes.txt variable and id into a vm.txt file to represent a disk space.
         file_writer.write( variable_id +" "+variable_value);
         file_writer.write("\n");
-        file_writer.close();
+        //file_writer.close();
     }
 
     public synchronized void Release(String variable_id) throws InterruptedException {
@@ -90,9 +91,6 @@ public class MemoryManager extends Thread{
                 System.out.println("Clock: " + (int)(SchedulerCycle.get_time()+this.assign_command_execution_time()) + ", Release"
                         + " process id" + "Variable" + variable_id
                         + " Value " + page.get_variable_value() + "\n");
-
-
-
                 break;
             }
         }
@@ -172,21 +170,29 @@ public class MemoryManager extends Thread{
                    }
         scan_disk.close();
         file_writer_output.close();
+        file_writer.close();
     }
     public int assign_command_execution_time()
     {
         return (int)(Math.random() * (500 - 400)) + 400;
     }
     @Override
-    public void run() {
+    public synchronized void run() {
+        System.out.println("Memory Manager thread is called!");
+
         try {
             SchedulerCycle.tick();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        while (!commands_list.isEmpty()) {
+       while (!commands_list.isEmpty()){
+            //for(int i= 0 ; i<commands_list.size();i++) {
             try {
+                //SchedulerCycle.tick();
+
+                assert commands_list.peek() != null;
                 execute_command(commands_list.remove());
+
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }

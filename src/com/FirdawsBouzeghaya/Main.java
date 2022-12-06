@@ -67,16 +67,16 @@ public class Main {
 
 
         try {
+            MemoryManager.commands_list = commands_list;
             SchedulerCycle clock =  new SchedulerCycle(0,true);
 
             Scheduler scheduler = new Scheduler(processes,number_cores);//create a scheduler object
                                                                          // and pass to it the list of
                                                                          // processes available in the
-            MemoryManager.commands_list = commands_list;
             MemoryManager memoryManager = new MemoryManager(Integer.parseInt(memory_size));
             clock.start();
-            memoryManager.start();
             scheduler.start();
+            memoryManager.start();
             scheduler.join();
             memoryManager.join();
             clock.set_start_clock(false);

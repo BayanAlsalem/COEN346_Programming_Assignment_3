@@ -73,10 +73,7 @@ public class Process extends Thread {
         return this.process_state;
     }
     /*this function is used to generate a random time for the execution of the commands. */
-    public int assign_command_execution_time()
-    {
-        return (int)(Math.random() * (500 - 400)) + 400;
-    }
+
     public void assignProcess_command()
     {
 
@@ -87,11 +84,18 @@ public class Process extends Thread {
     public void run() {
 
         try {
+            //SchedulerCycle.tick();
             System.out.println("Clock: " + SchedulerCycle.get_time() + ", Process " + this.getId() + ": Started.");
+            burst_time--;
+            //MemoryManager.commands_list.peek().setProcess_executing(this.getId());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         //assert MemoryManager.commands_list.peek() != null;
         //MemoryManager.commands_list.peek().setProcess_executing(this);

@@ -16,7 +16,7 @@ public class SchedulerCycle extends Thread{
     {
         return start_time;
     }
-    public static void tick() throws InterruptedException {
+    public synchronized static void tick() throws InterruptedException {
 
         Thread.sleep(1000);
         start_time=start_time+1000;
@@ -29,7 +29,6 @@ public class SchedulerCycle extends Thread{
     @Override
     public void run()
     {
-
         System.out.println("Clock started: ");
         while (!start_clock)
         {

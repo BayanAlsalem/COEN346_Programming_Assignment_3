@@ -62,7 +62,7 @@ public class Scheduler extends Thread {
 
     }
 
-    void start_process() throws InterruptedException, IOException {
+    public synchronized void start_process() throws InterruptedException, IOException {
         //to start the execution of process, we first need to
         // verify if the queue of running processes is not empty
         //and then process state is equal to false--> which indicates it has never
@@ -75,8 +75,10 @@ public class Scheduler extends Thread {
                     //System.out.println("Clock: " + SchedulerCycle.get_time() + "," + p.getId() + ": Started.");
                     p.setProcess_state(false);
                     assert MemoryManager.commands_list.peek() != null;
-                    MemoryManager.commands_list.peek().setProcess_executing(p.getId());
+                    //MemoryManager.commands_list
+                    //MemoryManager.commands_list.peek().setProcess_executing(p.getId());
                     p.run();
+
 
 
                 }
@@ -86,7 +88,7 @@ public class Scheduler extends Thread {
         }
     }
 
-    void finish_process() throws InterruptedException, IOException {
+    public synchronized void finish_process() throws InterruptedException, IOException {
         //When we finish a process, we first need to release the core and update all the queue.
         if (!this.running_processes.isEmpty()) {
             for (Process p : this.running_processes) {
@@ -133,15 +135,21 @@ public class Scheduler extends Thread {
 
 
     @Override
-    public void run() {
-
+    public synchronized void run() {
+        System.out.println("Scheduler thread is called!");
+      /*  try {
+            SchedulerCycle.tick();*//*increment the time*//*
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
         while (!this.all_processes.isEmpty())
         try {
-            SchedulerCycle.tick();/*increment the time*/
+            SchedulerCycle.tick();
             fill_ready_queue();/*fill the ready queue*/
             assign_core();/*assign core to ready processes*/
             start_process();
             finish_process();
+            updateQueues();
 
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
