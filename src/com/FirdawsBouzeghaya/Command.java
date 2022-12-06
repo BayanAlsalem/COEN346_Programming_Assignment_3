@@ -6,7 +6,7 @@ public class Command {
     private String variable_id;
     private int variable_value;
 
-    private Process process_executing;
+    private long process_executing;
     /*Constructor: */
     public Command(String command_name, String variable_id, int variable_value)
     {
@@ -27,7 +27,7 @@ public class Command {
     {
         this.variable_id = variable_id;
     }
-    public void setProcess_executing(Process process_executing) {
+    public void setProcess_executing(long process_executing) {
         this.process_executing = process_executing;
     }
 
@@ -43,7 +43,7 @@ public class Command {
     public int getVariable_value() {
         return variable_value;
     }
-    public Process getProcess_executing() {
+    public long getProcess_executing() {
         return process_executing;
     }
 

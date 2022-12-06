@@ -1,6 +1,7 @@
 package com.FirdawsBouzeghaya;
 
 import java.io.FileWriter;
+import java.time.Clock;
 
 public class Process extends Thread {
     // Declare attributes
@@ -71,16 +72,30 @@ public class Process extends Thread {
     {
         return this.process_state;
     }
+    /*this function is used to generate a random time for the execution of the commands. */
     public int assign_command_execution_time()
     {
+        return (int)(Math.random() * (500 - 400)) + 400;
+    }
+    public void assignProcess_command()
+    {
 
-        return 0;
     }
 
 
     @Override
     public void run() {
-        this.burst_time--;
+
+        try {
+            System.out.println("Clock: " + SchedulerCycle.get_time() + ", Process " + this.getId() + ": Started.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        //assert MemoryManager.commands_list.peek() != null;
+        //MemoryManager.commands_list.peek().setProcess_executing(this);
+
     }
 
 

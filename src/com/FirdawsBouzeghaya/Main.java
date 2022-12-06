@@ -74,12 +74,11 @@ public class Main {
                                                                          // processes available in the
             MemoryManager.commands_list = commands_list;
             MemoryManager memoryManager = new MemoryManager(Integer.parseInt(memory_size));
-            scheduler.start();
-            memoryManager.start();
             clock.start();
-            memoryManager.join();
+            memoryManager.start();
+            scheduler.start();
             scheduler.join();
-
+            memoryManager.join();
             clock.set_start_clock(false);
             clock.join();
 

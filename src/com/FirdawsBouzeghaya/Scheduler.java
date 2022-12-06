@@ -71,9 +71,12 @@ public class Scheduler extends Thread {
         if (!this.running_processes.isEmpty()) {
             for (Process p : this.running_processes) {
                 if (!p.getProcess_state()) {
-                    file_writer.write("Clock: " + SchedulerCycle.get_time()+ p.getServiceTime() + "," + p.getId() + ": Started.");
-                    System.out.println("Clock: " + SchedulerCycle.get_time() + "," + p.getId() + ": Started.");
+                    //file_writer.write("Clock: " + SchedulerCycle.get_time()+ p.getServiceTime() + "," + p.getId() + ": Started.");
+                    //System.out.println("Clock: " + SchedulerCycle.get_time() + "," + p.getId() + ": Started.");
                     p.setProcess_state(false);
+                    assert MemoryManager.commands_list.peek() != null;
+                    MemoryManager.commands_list.peek().setProcess_executing(p.getId());
+                    p.run();
 
 
                 }
@@ -91,8 +94,9 @@ public class Scheduler extends Thread {
                 // if (p.equals(process))
                 {
                     this.running_processes.remove(p);
-                    this.finished_processes.add(p);
+                   // this.finished_processes.add(p);
                     this.all_processes.remove(p);
+                    p.join();
                     file_writer.write("Clock: " + (SchedulerCycle.get_time()+ p.getServiceTime()*1000) + "," + p.getId() + ": Finished.");
                     System.out.println("Clock: " + (SchedulerCycle.get_time()+ p.getServiceTime()*1000) + "," + p.getId() + ": Finished.");
 
