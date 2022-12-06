@@ -12,7 +12,11 @@ public class MemoryManager extends Thread{
     private ArrayList<Page>main_memory;
     private File vm_disk = new File("src/com/FirdawsBouzeghaya/vm.txt");
     FileWriter file_writer = new FileWriter(vm_disk, false);
+
     public static Queue<Command> commands_list; // this commands list should store all the commands
+    File output_file = new File("src/com/FirdawsBouzeghaya/Output.txt");
+    FileWriter file_writer_output = new FileWriter(output_file, false);
+
     Command command ;//this is the command that should be executed.
     // obtained from the commands.txt file
     // To read from the text file
@@ -45,13 +49,14 @@ public class MemoryManager extends Thread{
 
     }
 
-    public synchronized void Store(String variable_id, long variable_value) {
+    public synchronized void Store(String variable_id, long variable_value) throws InterruptedException {
         // Check if the main memory has empty pages
         Page page = new Page(variable_id,variable_value);
         if (number_of_used_page < main_memory_size) {
             //Store the new variable in a page in the main memory.
             main_memory.add(page);
             number_of_used_page++;
+            System.out.println("Clock: "+SchedulerCycle.get_time()+"Store: Variable "+variable_id + ", Value"+variable_value);
         }
         else // Store in the disk space in the vm.txt file.
         {
@@ -91,8 +96,6 @@ public class MemoryManager extends Thread{
         // Check if the variable id exists in the main memory
         // loop through the pages
 
-
-
         for (Page page : main_memory) { // for every page in the main memory search for the page
 
             if (page.get_variable_id().equals(variable_id))
@@ -102,7 +105,7 @@ public class MemoryManager extends Thread{
                         + " process id" + "Lookup: Variable" + variable_id
                         + " Value " + page.get_variable_value() + "\n");
 
-                file_writer.write("Clock: " + SchedulerCycle.get_time() + "Process"
+                file_writer_output.write("Clock: " + SchedulerCycle.get_time() + "Process"
                         + "page.get_process_id()" + "Lookup: Variable" + variable_id
                         + " Value " + page.get_variable_value() + "\n");
 
@@ -118,7 +121,7 @@ public class MemoryManager extends Thread{
                     Store(variable_id, page.get_variable_value());
 
                 }
-                else Swap(page);
+               // else Swap(page);
                 //}
                // System.out.println("Clock: "+ SchedulerCycle.get_time()+ "Process"+ page.get_process_id()+ "Lookup: Variable"+ variable_id+ "Value "+ page.get_variable_value()+ "\n");
             }
@@ -141,7 +144,7 @@ public class MemoryManager extends Thread{
 
             //Save the line in an array of String and split the values
             String [] values = scan_disk.nextLine().split(" ");
-            if (values[0].equals(page.get_variable_id())) // I am not sure if we need a page object as an argument or just the variable ID
+            if (values[0].equals(page.get_variable_id()))
             {
                 long value_long = Long.parseLong(values[1]);
                 for (int i=0; i<main_memory_size; i++)
@@ -153,16 +156,14 @@ public class MemoryManager extends Thread{
                             Release(page1.get_variable_id()); // delete the current page from main memory
                             Store(page.get_variable_id(),page.get_variable_value());
                             System.out.println("Clock: "+ SchedulerCycle.get_time()+ "Memory Manager,"+" SWAP:"+" Variable " + page.get_variable_id()+ "with "+ "Variable "+ page.get_variable_value()+ "\n");
-                            file_writer.write("Clock: "+ SchedulerCycle.get_time()+ "Memory Manager,"+" SWAP:"+" Variable " + page.get_variable_id()+ "with "+ "Variable "+ page.get_variable_value()+ "\n");
+                            file_writer_output.write("Clock: "+ SchedulerCycle.get_time()+ "Memory Manager,"+" SWAP:"+" Variable " + page.get_variable_id()+ "with "+ "Variable "+ page.get_variable_value()+ "\n");
                         }
                     }
                 }
 
             }
-            else {
-                System.out.println("The page does not exist in the main memory or in the disk. \n");
-            }
-        }
+
+                   }
         scan_disk.close();
     }
 
@@ -172,9 +173,11 @@ public class MemoryManager extends Thread{
         while (!commands_list.isEmpty()) {
             try {
                 execute_command(commands_list.remove());
+                file_writer_output.close();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
+
     }
 }

@@ -143,15 +143,7 @@ public class Scheduler extends Thread {
             e.printStackTrace();
         }
 
-
-      //   while (!this.all_processes.isEmpty())
-        //{
-
-            //startSchedulingProcesses();
-            //while we still have processes in our queue.
-            }
-
-        //}
+        }
 
     }
 

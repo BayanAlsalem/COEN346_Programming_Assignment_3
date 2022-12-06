@@ -71,6 +71,11 @@ public class Process extends Thread {
     {
         return this.process_state;
     }
+    public int assign_command_execution_time()
+    {
+
+        return 0;
+    }
 
 
     @Override
