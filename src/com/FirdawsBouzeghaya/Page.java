@@ -7,7 +7,6 @@ public class Page {
     private long variable_value; //unsigned integer value
     private boolean is_available; //a boolean variable that indicates the availability of of a page.
     private int last_access_time; //used to determine when was this page last accessed.
-    private Process process_accessing_the_page;
 
     public Page(String variable_id, long variable_value)
     {
@@ -44,13 +43,6 @@ public class Page {
     public void setLastAccess(int last_access_time) {
         this.last_access_time = last_access_time;
     }
-    public void setProcess_accessing_the_page(Process p)
-    {
-        this.process_accessing_the_page = p;
-    }
-    public int get_process_id()
-    {
-        return this.process_accessing_the_page.getProcessID();
-    }
+
 
 }

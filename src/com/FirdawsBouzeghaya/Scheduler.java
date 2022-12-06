@@ -14,7 +14,7 @@ public class Scheduler extends Thread {
     private Queue<Process> all_processes;
     private Queue<Process> finished_processes;
     private Queue<Process> running_processes; /*queue that stores the processes that we are running.*/
-    private ArrayList<String>commands = new ArrayList<>(); /*An array list to store the different commands from the commands.txt*/
+    //private ArrayList<Command>commands = new ArrayList<>(); /*An array list to store the different commands from the commands.txt*/
     private int number_cores;
     private int number_available_cores;
 
@@ -29,14 +29,14 @@ public class Scheduler extends Thread {
         }
     }
 
-    public Scheduler(Queue<Process> processes, int number_cores,ArrayList<String>commands) {
+    public Scheduler(Queue<Process> processes, int number_cores) {
         this.all_processes = new LinkedList<>();
         this.finished_processes = new LinkedList<>();
         this.all_processes = processes;
         this.number_cores = number_cores;
         this.running_processes = new LinkedList<>();
         this.ready_processes = new LinkedList<>();
-        this.commands = commands;
+
 
     }
 
@@ -71,8 +71,7 @@ public class Scheduler extends Thread {
         if (!this.running_processes.isEmpty()) {
             for (Process p : this.running_processes) {
                 if (!p.getProcess_state()) {
-                    file_writer.write("Clock: " + (int)(SchedulerCycle.get_time()+ p.getServiceTime()) + "," + p.getId() + ": Started.");
-                    file_writer.write("\n");
+                    file_writer.write("Clock: " + SchedulerCycle.get_time()+ p.getServiceTime() + "," + p.getId() + ": Started.");
                     System.out.println("Clock: " + SchedulerCycle.get_time() + "," + p.getId() + ": Started.");
                     p.setProcess_state(false);
 
@@ -95,7 +94,6 @@ public class Scheduler extends Thread {
                     this.finished_processes.add(p);
                     this.all_processes.remove(p);
                     file_writer.write("Clock: " + (SchedulerCycle.get_time()+ p.getServiceTime()*1000) + "," + p.getId() + ": Finished.");
-                    file_writer.write(" \n");
                     System.out.println("Clock: " + (SchedulerCycle.get_time()+ p.getServiceTime()*1000) + "," + p.getId() + ": Finished.");
 
                 }
@@ -145,20 +143,7 @@ public class Scheduler extends Thread {
                 e.printStackTrace();
             }
 
-
-        //   while (!this.all_processes.isEmpty())
-        //{
-
-        //startSchedulingProcesses();
-        //while we still have processes in our queue.
-        try {
-            file_writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
-
-    //}
 
 
 }

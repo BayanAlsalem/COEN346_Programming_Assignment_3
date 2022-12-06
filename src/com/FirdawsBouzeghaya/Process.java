@@ -7,16 +7,17 @@ public class Process extends Thread {
     private int burst_time; // execution time.
     private int arrival_time; //time at which the process enters the queue.
     private int remaining_time; //time remaining for the execution of a process.
-    private final int process_ID;
+    private  int process_ID;
     private String command_executed; /*This variable indicates which command this process is executing. */
     private Page assigned_page;
+
     private Boolean process_state;// set to false if the process did not start its execution
     // true when we start its execution and assign to it a core.
     private FileWriter file_writer;
 
     // Default Constructor
     public Process() {
-        process_ID = 0;
+        process_ID=0;
         burst_time = 0;
         arrival_time  = 0;
         remaining_time = burst_time;
@@ -70,6 +71,12 @@ public class Process extends Thread {
     {
         return this.process_state;
     }
+    public int assign_command_execution_time()
+    {
+
+        return 0;
+    }
+
 
     @Override
     public void run() {
