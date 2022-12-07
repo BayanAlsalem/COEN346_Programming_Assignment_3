@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Scanner;
-
+import java.util.concurrent.Semaphore;
 
 
 public class MemoryManager extends Thread{
@@ -23,6 +23,7 @@ public class MemoryManager extends Thread{
     // obtained from the commands.txt file
     // To read from the text file
     Scanner scan_disk = new Scanner(vm_disk);
+    Semaphore semaphore = new Semaphore(1);
 
 
     public MemoryManager(int main_memory_size) throws IOException {
@@ -33,17 +34,23 @@ public class MemoryManager extends Thread{
 
     //Reading commands should be synchronized, as we only want to allow one process at a time.
     //Extract the function that the process will execute
-    public synchronized void execute_command(Command command) throws IOException, InterruptedException {
+    public void execute_command(Command command) throws IOException, InterruptedException {
 
         switch (command.getCommand_name()) {
             case "Store":
+               semaphore.acquire();
                 Store(command.getVariable_id(), command.getVariable_value());
+                semaphore.release();
                 break;
             case "Release":
+                semaphore.acquire();
                 Release(command.getVariable_id());
+                semaphore.release();
                 break;
             case "Lookup":
+                semaphore.acquire();
                 Lookup(command.getVariable_id());
+                 semaphore.release();
                 break;
             default:
                 // do nothing.
@@ -51,14 +58,17 @@ public class MemoryManager extends Thread{
 
     }
 
-    public synchronized void Store(String variable_id, long variable_value) throws InterruptedException {
+    public void Store(String variable_id, long variable_value) throws InterruptedException {
         // Check if the main memory has empty pages
         Page page = new Page(variable_id,variable_value);
+       // semaphore.acquire();
         if (number_of_used_page < main_memory_size) {
-            //Store the new variable in a page in the main memory.
+           // Store the new variable in a page in the main memory.
             main_memory.add(page);
             number_of_used_page++;
+           // semaphore.release();
             System.out.println(" Clock: " +assignClockTime()+ " Store: Variable "+variable_id + ", Value " + variable_value);
+
         }
         else // Store in the disk space in the vm.txt file.
         {
@@ -68,17 +78,20 @@ public class MemoryManager extends Thread{
                 e.printStackTrace();
             }
         }
+
     }
 
     /*does storing into the vm.txt file have to be synchronized ?*/
-    private synchronized void store_in_disk(String variable_id,long variable_value) throws IOException {
+    private  void store_in_disk(String variable_id,long variable_value) throws IOException, InterruptedException {
         //Store the processes.txt variable and id into a vm.txt file to represent a disk space.
+       // semaphore.acquire();
         file_writer.write( variable_id +" "+variable_value);
         file_writer.write("\n");
+       // semaphore.release();
         file_writer.close();
     }
 
-    public synchronized void Release(String variable_id) {
+    public  void Release(String variable_id) throws InterruptedException {
         /*This function removes the variable id and its value from the memory and releases
          * the holding page --> empty it.*/
         /* We first need to find the assigned page to this variable by looping through
@@ -87,8 +100,10 @@ public class MemoryManager extends Thread{
         for (Page page : main_memory){
             if(page.get_variable_id().equals(variable_id))
             {
+              //  semaphore.acquire();
                 main_memory.remove(page);
                 number_of_used_page--;
+              //  semaphore.release();
                 break;
             }
         }
@@ -98,6 +113,7 @@ public class MemoryManager extends Thread{
         // Check if the variable id exists in the main memory
         // loop through the pages
 
+       // semaphore.acquire();
         for (Page page : main_memory) { // for every page in the main memory search for the page
 
             if (page.get_variable_id().equals(variable_id))
@@ -124,11 +140,16 @@ public class MemoryManager extends Thread{
 
                 }
                  else Swap(page);
+
                 //}
-                System.out.println("Clock: "+ assignClockTime()+ "Process "+ getId()+ " Lookup: Variable"+ variable_id+ "Value "+ page.get_variable_value()+ "\n");
+
+                System.out.println("Clock: "+ assignClockTime()+ "Process "+ getId()+ " Lookup: Variable "+ variable_id+ " Value "+ page.get_variable_value()+ "\n");
+
             }
+            break;
 
         }
+        //semaphore.release();
         return -1; // if page does not exist in the main memory but does in the vm.txt
     }
 
@@ -137,13 +158,14 @@ public class MemoryManager extends Thread{
     // to be in the main memory.
     // So, here we are checking if the page exists in the disk or not
     // if it does, then we need to swap it with the least time accessed page
-    public synchronized void Swap(Page page) throws InterruptedException, IOException {
+    public  void Swap(Page page) throws InterruptedException, IOException {
         //I don't think we need a page as an argument!
         //Check if the disk has the page
 
         while (scan_disk.hasNextLine()) //open the vm.txt file and go through it
         {
 
+            //semaphore.acquire();
             //Save the line in an array of String and split the values
             String [] values = scan_disk.nextLine().split(" ");
             if (values[0].equals(page.get_variable_id()))
@@ -157,16 +179,23 @@ public class MemoryManager extends Thread{
                         {
                             Release(page1.get_variable_id()); // delete the current page from main memory
                             Store(page.get_variable_id(),page.get_variable_value());
-                            System.out.println("Clock: "+ assignClockTime()+ "Memory Manager,"+" SWAP:"+" Variable " + page.get_variable_id()+ "with "+ "Variable "+ page.get_variable_value()+ "\n");
-                            file_writer_output.write("Clock: "+ assignClockTime()+ "Memory Manager,"+" SWAP:"+" Variable " + page.get_variable_id()+ "with "+ "Variable "+ page.get_variable_value()+ "\n");
+                            System.out.println("Clock: "+ assignClockTime()+ " Memory Manager,"+" SWAP:"+" Variable " + page.get_variable_id()+ " with "+ " Variable "+ page.get_variable_value()+ "\n");
+                            file_writer_output.write("Clock: "+ assignClockTime()+ " Memory Manager,"+" SWAP:"+" Variable " + page.get_variable_id()+ "with "+ "Variable "+ page.get_variable_value()+ "\n");
+
+                           // break;
                         }
+
                     }
+
                 }
 
+
             }
+           // semaphore.release();
 
         }
-        scan_disk.close();
+
+      //  scan_disk.close();
         file_writer_output.close();
     }
 
