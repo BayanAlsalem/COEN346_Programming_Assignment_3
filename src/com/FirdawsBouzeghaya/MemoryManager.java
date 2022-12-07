@@ -88,8 +88,8 @@ public class MemoryManager extends Thread{
             {
                 main_memory.remove(page);
                 number_of_used_page--;
-                System.out.println("Clock: " + (int)(SchedulerCycle.get_time()+this.assign_command_execution_time()) + ", Release"
-                        + " process id" + "Variable" + variable_id
+                System.out.println("Clock: " + (int)(SchedulerCycle.get_time()+this.assign_command_execution_time()+1000) + ", Release"
+                        + " Process 12" + ", Variable " + variable_id
                         + " Value " + page.get_variable_value() + "\n");
                 break;
             }
@@ -105,8 +105,7 @@ public class MemoryManager extends Thread{
             if (page.get_variable_id().equals(variable_id))
             { // if it exists
 
-                System.out.println("Clock: " + (int)(SchedulerCycle.get_time()+this.assign_command_execution_time()) + "Process"
-                        + " process id" + "Lookup: Variable" + variable_id
+                System.out.println("Clock: " + (int)(SchedulerCycle.get_time()+this.assign_command_execution_time()) + " Process 12: " + " Lookup: Variable" + variable_id
                         + " Value " + page.get_variable_value() + "\n");
 
                 file_writer_output.write("Clock: " + SchedulerCycle.get_time() + "Process"
@@ -125,10 +124,12 @@ public class MemoryManager extends Thread{
                     Store(variable_id, page.get_variable_value());
 
                 }
+                else Swap(page);
                // else Swap(page);
                 //}
                // System.out.println("Clock: "+ SchedulerCycle.get_time()+ "Process"+ page.get_process_id()+ "Lookup: Variable"+ variable_id+ "Value "+ page.get_variable_value()+ "\n");
             }
+            break;
 
         }
         return -1; // if page does not exist in the main memory but does in the vm.txt
@@ -140,12 +141,8 @@ public class MemoryManager extends Thread{
     // So, here we are checking if the page exists in the disk or not
     // if it does, then we need to swap it with the least time accessed page
     public synchronized void Swap(Page page) throws InterruptedException, IOException {
-        //I don't think we need a page as an argument!
-        //Check if the disk has the page
-
         while (scan_disk.hasNextLine()) //open the vm.txt file and go through it
         {
-
             //Save the line in an array of String and split the values
             String [] values = scan_disk.nextLine().split(" ");
             if (values[0].equals(page.get_variable_id()))
@@ -168,7 +165,7 @@ public class MemoryManager extends Thread{
             }
 
                    }
-        scan_disk.close();
+        //scan_disk.close();
         file_writer_output.close();
         file_writer.close();
     }
@@ -202,5 +199,7 @@ public class MemoryManager extends Thread{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        scan_disk.close();
+
     }
 }
